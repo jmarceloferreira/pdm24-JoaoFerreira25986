@@ -8,18 +8,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import com.example.appnoticias.data.dto.Article
 
 @Composable
-fun NewsListScreen(viewModel: NewsViewModel) {
-    // Observar o LiveData dos artigos
+fun NewsListScreen(viewModel: NewsViewModel, navController: NavController) {
     val articles by viewModel.articles.observeAsState(initial = emptyList())
 
-    // LazyColumn para listar os artigos
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         items(articles) { article ->
-            // Passando apenas título e abstract como descrição
-            NewsItem(title = article.title, description = article.abstract ?: "Sem descrição disponível")
+            NewsItem(
+                title = article.title,
+                description = article.abstract ?: "Sem descrição disponível",
+                imageUrl = article.multimedia?.firstOrNull()?.url, // Passando a URL da imagem
+                onClick = {
+                    navController.navigate("newsDetail/${article.title}")
+                }
+            )
         }
     }
 }
