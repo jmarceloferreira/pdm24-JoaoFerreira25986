@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "990416333610",
+    "project_id": "vinylstore1-66977",
+    "storage_bucket": "vinylstore1-66977.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:990416333610:android:ebaf850c4a08e63d4f8c53",
+        "android_client_info": {
+          "package_name": "com.example.vinylstore"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHJPazOZE-GH0kO2FPECaYtCjUcl01WbY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
