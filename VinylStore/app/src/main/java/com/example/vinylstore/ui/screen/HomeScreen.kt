@@ -25,7 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import androidx.compose.ui.draw.clip
 
 @Composable
-fun HomeScreen(onCartClick: () -> Unit) {
+fun HomeScreen(onCartClick: () -> Unit, onProfileClick: () -> Unit) {
     val firestore = FirebaseFirestore.getInstance()
     val cartRepository = CartRepository(firestore)
     val userEmail = FirebaseAuth.getInstance().currentUser?.email ?: return
@@ -55,6 +55,14 @@ fun HomeScreen(onCartClick: () -> Unit) {
                 title = { Text("VinylStore", color = Color.White) },
                 backgroundColor = Color.Black,
                 actions = {
+                    // Botão Meu Perfil
+                    TextButton(
+                        onClick = onProfileClick,
+                        colors = ButtonDefaults.textButtonColors(contentColor = Color.White)
+                    ) {
+                        Text("Meu Perfil")
+                    }
+                    // Botão Carrinho
                     IconButton(onClick = onCartClick) {
                         Icon(
                             imageVector = Icons.Default.ShoppingCart,
@@ -90,7 +98,7 @@ fun HomeScreen(onCartClick: () -> Unit) {
                 )
 
                 LazyColumn(
-                    modifier = Modifier.weight(1f)// Ocupa o espaço disponível
+                    modifier = Modifier.weight(1f)
                 ) {
                     items(vinis.filter {
                         it.artista.contains(searchQuery, ignoreCase = true)

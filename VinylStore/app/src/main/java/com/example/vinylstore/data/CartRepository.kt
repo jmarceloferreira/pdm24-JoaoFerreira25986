@@ -6,7 +6,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 class CartRepository(
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 ) {
-    // Adiciona item ao carrinho
     fun addToCart(
         userEmail: String,
         vinil: Vinil,
@@ -34,7 +33,6 @@ class CartRepository(
             }
     }
 
-    // Obtém itens do carrinho para um e-mail específico
     fun getUserCart(
         userEmail: String,
         onSuccess: (List<Vinil>) -> Unit,
@@ -92,4 +90,43 @@ class CartRepository(
             }
     }
 
+    fun checkoutCart(
+        userEmail: String,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        firestore.collection("cart")
+            .whereEqualTo("userEmail", userEmail)
+            .get()
+            .addOnSuccessListener { result ->
+                val purchaseItems = result.documents.mapNotNull { doc ->
+                    doc.data
+                }
+
+                val batch = firestore.batch()
+
+                purchaseItems.forEach { item ->
+                    val purchaseRef = firestore.collection("purchases").document()
+                    batch.set(purchaseRef, item)
+                }
+
+                result.documents.forEach { doc ->
+                    batch.delete(doc.reference)
+                }
+
+                batch.commit()
+                    .addOnSuccessListener {
+                        Log.d("CartRepository", "Checkout concluído com sucesso")
+                        onSuccess()
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.e("CartRepository", "Erro ao concluir o checkout", exception)
+                        onFailure(exception)
+                    }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("CartRepository", "Erro ao buscar itens do carrinho para checkout", exception)
+                onFailure(exception)
+            }
+    }
 }

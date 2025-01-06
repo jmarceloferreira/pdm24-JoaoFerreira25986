@@ -22,7 +22,8 @@ import androidx.compose.foundation.background
 @Composable
 fun CartScreen(
     userEmail: String,
-    cartRepository: CartRepository
+    cartRepository: CartRepository,
+    onPaymentClick: () -> Unit
 ) {
     var sharedEmail by remember { mutableStateOf("") }
     var cartItems by remember { mutableStateOf<List<Vinil>>(emptyList()) }
@@ -153,7 +154,7 @@ fun CartScreen(
                             item {
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Button(
-                                    onClick = { /* Lógica de pagamento aqui */ },
+                                    onClick = { onPaymentClick() },
                                     colors = ButtonDefaults.buttonColors(
                                         backgroundColor = Color.Black,
                                         contentColor = Color.White
