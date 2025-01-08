@@ -24,41 +24,54 @@ class CalculatorLogic {
     }
 
     private fun handleNumberInput(input: String) {
-        if (!isOperatorSelected) {
-            // Construindo o primeiro operando
-            firstOperand = if (firstOperand == "0" && input != ".") input else firstOperand + input
-            displayText = firstOperand
+        val currentOperand = if (!isOperatorSelected) firstOperand else secondOperand
+
+        if (input == "." && currentOperand.contains(".")) return
+
+        if (currentOperand == "0" && input != ".") {
+            if (!isOperatorSelected) firstOperand = input else secondOperand = input
         } else {
-            // Construindo o segundo operando
-            secondOperand = if (secondOperand == "0" && input != ".") input else secondOperand + input
-            displayText = secondOperand
+            if (!isOperatorSelected) firstOperand += input else secondOperand += input
         }
+        updateDisplay()
+    }
+
+    private fun updateDisplay() {
+        displayText = if (!isOperatorSelected) firstOperand else secondOperand
+        if (displayText.isEmpty()) displayText = "0"
     }
 
     private fun handleOperatorInput(input: String) {
         if (firstOperand.isNotEmpty()) {
             operator = input
-            isOperatorSelected = true // Prepara para o segundo operando
+            isOperatorSelected = true
         }
     }
 
     private fun calculateResult() {
-        if (firstOperand.isNotEmpty() && secondOperand.isNotEmpty() && operator != null) {
-            val result = when (operator) {
+        if (secondOperand.isEmpty()) return
+
+        val result = try {
+            when (operator) {
                 "+" -> firstOperand.toDouble() + secondOperand.toDouble()
                 "-" -> firstOperand.toDouble() - secondOperand.toDouble()
                 "x" -> firstOperand.toDouble() * secondOperand.toDouble()
                 "÷" -> if (secondOperand.toDouble() != 0.0) {
                     firstOperand.toDouble() / secondOperand.toDouble()
                 } else {
-                    null // Evita divisão por zero
+                    throw ArithmeticException("Divisão por zero")
                 }
                 else -> null
             }
-
-            displayText = result?.toString() ?: "Error"
-            resetAfterCalculation(result?.toString())
+        } catch (e: Exception) {
+            null
         }
+
+        displayText = result?.let {
+            if (it % 1 == 0.0) it.toInt().toString() else it.toString()
+        } ?: "Error"
+
+        resetAfterCalculation(displayText)
     }
 
     private fun resetAfterCalculation(result: String?) {
