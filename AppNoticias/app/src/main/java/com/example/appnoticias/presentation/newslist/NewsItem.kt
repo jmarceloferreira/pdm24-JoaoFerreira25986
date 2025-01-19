@@ -8,41 +8,53 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter // Importação correta
+import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
+import com.example.appnoticias.data.dto.Article
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @Composable
-fun NewsItem(title: String, description: String, imageUrl: String?, onClick: () -> Unit) {
+fun NewsItem(article: Article, navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        // Título
+        val imageUrl = article.multimedia?.firstOrNull()?.url ?: ""
+        if (imageUrl.isNotEmpty()) {
+            Image(
+                painter = rememberImagePainter(data = imageUrl),
+                contentDescription = "Imagem da notícia",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .clickable {
+                        val encodedTitle = URLEncoder.encode(article.title, StandardCharsets.UTF_8.toString())
+                        val encodedDescription = URLEncoder.encode(article.abstract ?: "Sem descrição disponível", StandardCharsets.UTF_8.toString())
+                        val encodedDate = URLEncoder.encode(article.published_date, StandardCharsets.UTF_8.toString())
+                        val encodedImageUrl = URLEncoder.encode(imageUrl, StandardCharsets.UTF_8.toString())
+
+                        navController.navigate("details/$encodedTitle/$encodedDescription/$encodedDate/$encodedImageUrl")
+                    }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         Text(
-            text = title,
+            text = article.title,
             style = MaterialTheme.typography.headlineSmall,
-            color = Color.Black,
-            modifier = Modifier
-                .padding(bottom = 4.dp)
-                .clickable { onClick() } // Tornando o título clicável
+            color = Color.Black
         )
 
-        // Descrição
+        Spacer(modifier = Modifier.height(4.dp))
+
         Text(
-            text = description,
+            text = article.abstract ?: "Sem descrição disponível",
             style = MaterialTheme.typography.bodyLarge,
             color = Color.Gray
         )
-
-        // Exibir a imagem, caso haja URL fornecida
-        imageUrl?.let {
-            Image(
-                painter = rememberImagePainter(it),
-                contentDescription = null,
-                modifier = Modifier.fillMaxWidth().height(200.dp) // Ajuste a altura conforme necessário
-            )
-        }
     }
 }

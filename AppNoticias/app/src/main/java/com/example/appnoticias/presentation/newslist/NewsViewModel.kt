@@ -13,7 +13,7 @@ class NewsViewModel(private val getTopStoriesUseCase: GetTopStoriesUseCase) : Vi
     val error = MutableLiveData<String>()
 
     init {
-        fetchTopStories("home") // Pode ser qualquer categoria, "home" é apenas um exemplo
+        fetchTopStories("home")
     }
 
     fun fetchTopStories(category: String) {
@@ -25,10 +25,5 @@ class NewsViewModel(private val getTopStoriesUseCase: GetTopStoriesUseCase) : Vi
                 error.postValue(e.message)
             }
         }
-    }
-
-    // Função para buscar o artigo por ID ou título
-    fun getArticleById(articleId: String?): Article? {
-        return articles.value?.find { it.title == articleId }
     }
 }

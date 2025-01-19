@@ -8,6 +8,7 @@
         android:minSdkVersion="21"
         android:targetSdkVersion="35" />
 
+    <!-- Permissão de Internet -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <permission
@@ -27,6 +28,8 @@
         android:supportsRtl="true"
         android:testOnly="true"
         android:theme="@style/Theme.AppNoticias" >
+
+        <!-- Atividade principal (MainActivity) -->
         <activity
             android:name="com.example.appnoticias.MainActivity"
             android:exported="true" >
